@@ -1,11 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        GRADLE_HOME = tool 'Gradle'
-        PATH = "${GRADLE_HOME}/bin:${env.PATH}"
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -16,9 +11,8 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    withGradle {
-                        sh 'gradle clean build'
-                    }
+                    // Your Gradle build command goes here
+                    sh 'gradle clean build'
                 }
             }
         }
@@ -26,16 +20,15 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                    withGradle {
-                        sh 'gradle test'
-                    }
+                    // Your Gradle test command goes here
+                    sh 'gradle test'
                 }
             }
         }
 
         stage('Deploy') {
             steps {
-                // Add deployment steps here if needed
+                // Your deployment steps go here if needed
             }
         }
     }
@@ -48,15 +41,6 @@ pipeline {
         failure {
             echo 'Build failed! Notify the team...'
             // Add notification or alert steps on failure
-        }
-    }
-}
-
-def withGradle(Closure body) {
-    withEnv(['GRADLE_OPTS=-Dorg.gradle.daemon=false']) {
-        withCredentials([usernamePassword(credentialsId: 'gradle', usernameVariable: 'GRADLE_USER', passwordVariable: 'GRADLE_PASSWORD')]) {
-            sh 'chmod +x gradlew'
-            body()
         }
     }
 }
